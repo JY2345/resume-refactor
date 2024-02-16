@@ -23,7 +23,7 @@
 		"swagger-ui-express": "^5.0.0"
 	},
 	"scripts": {
-		"dev": "nodemon app.js",
+		"dev": "nodemon src/app.js",
 		"prtt": "yarn prettier --write ."
 	}
 }

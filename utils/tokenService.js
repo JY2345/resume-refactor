@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { prisma } from '../models/index.js';
+import { prisma } from '../config/index.js';
 
 export async function saveRefreshToken(userId, token) {
 	const expiryDate = new Date();

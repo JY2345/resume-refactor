@@ -1,5 +1,5 @@
 import express from 'express';
-import { prisma } from '../models/index.js';
+import { prisma } from '../config/index.js';
 import { hashPassword, checkPassword } from '../utils/bcrypt.js';
 import jwt from 'jsonwebtoken';
 import authMiddleware from '../middlewares/need-signin.middleware.js';

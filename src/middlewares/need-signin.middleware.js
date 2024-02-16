@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { prisma } from '../models/index.js';
+import { prisma } from '../config/index.js';
 import { createAccessToken } from '../utils/tokenService.js';
 
 export default async function authenticateToken(req, res, next) {
