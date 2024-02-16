@@ -6,7 +6,7 @@ import axios from 'axios';
  */
 export const sendKakaoTokenToServer = async (token) => {
 	try {
-		const serverEndpoint = process.env.CONNECTION_URI    + '/api/sign-in';
+		const serverEndpoint = process.env.CONNECTION_URI + '/api/sign-in';
 
 		const data = {
 			kakaoAccessToken: token,
