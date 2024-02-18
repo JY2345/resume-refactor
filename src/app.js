@@ -4,6 +4,7 @@ import { swaggerUi, specs } from './utils/swagger.js';
 import UsersRouter from './routers/users.router.js';
 import ResumesRouter from './routers/resumes.router.js';
 import KakaoAuthRouter from './routers/auth.router.js';
+import { ErrorHandlingMiddleware } from './middlewares/error-handling.middleware.js';
 import {
 	createAccessToken,
 	createRefreshToken,
@@ -18,6 +19,7 @@ app.use(cookieParser());
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api', [UsersRouter, ResumesRouter]);
 app.use('/auth', KakaoAuthRouter);
+app.use(ErrorHandlingMiddleware);
 
 app.post('/tokens', (req, res) => {
 	const { id } = req.body;

@@ -12,9 +12,12 @@
 		"dotenv": "^16.4.1",
 		"express": "^4.18.2",
 		"jsonwebtoken": "^9.0.2",
+		"mysql2": "^3.9.1",
 		"passport": "^0.7.0",
 		"passport-kakao": "^1.0.1",
-		"prisma": "^5.8.1"
+		"prisma": "^5.8.1",
+		"reflect-metadata": "^0.2.1",
+		"typeorm": "^0.3.20"
 	},
 	"devDependencies": {
 		"nodemon": "^3.0.3",
