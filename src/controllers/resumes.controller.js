@@ -1,4 +1,5 @@
 // import { ResumesService } from '../services/resumes.service.js';
+import {ApiError} from '../middlewares/error-handling.middleware.js'; 
 
 export class ResumesController {
 	//resumesService = new ResumesService();
@@ -39,7 +40,7 @@ export class ResumesController {
 			const { resumeId } = req.params;
 			const resume = await this.resumesService.findResumeById(+resumeId);
 			if (!resume) {
-				return res.status(404).json({ message: `아이디가 ${resumeId}인 이력서가 존재하지 않습니다.` });
+				throw new ApiError(404, `아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`);
 			}
 
 			return res.status(200).json({ data: resume });
