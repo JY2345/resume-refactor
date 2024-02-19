@@ -1,4 +1,5 @@
 import { ResumesRepository } from '../repositories/resumes.repository.js';
+import {ApiError} from '../middlewares/error-handling.middleware.js'; 
 
 export class ResumesService {
 	//resumesRepository = new ResumesRepository();
@@ -67,7 +68,7 @@ export class ResumesService {
 		const resume = await this.resumesRepository.findResumeById(resumeId);
 
 		if (!resume) {
-			throw new Error(404, `아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`);
+			throw new ApiError(404, `아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`);
 		}
 	
 		return {
