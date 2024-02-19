@@ -1,6 +1,12 @@
 import { prisma } from '../../config/index.js';
 
 export class ResumesRepository {
+
+	// 테스트를 위해 의존성 주입
+	constructor(prisma){
+		this.prisma = prisma;
+	}
+
 	findAllResumes = async () => {
 		let query = {
 			select: {
@@ -22,12 +28,12 @@ export class ResumesRepository {
 			// },
 		};
 
-		const resumes = await prisma.resumes.findMany(query);
+		const resumes = await this.prisma.resumes.findMany(query);
 		return resumes;
 	}; // findAllResumes
 
-	createResume = async () => {
-		const createdResume = await prisma.resumes.create({
+	createResume = async (userId, title, contents, statusCode) => {
+		const createdResume = await this.prisma.resumes.create({
 			data: {
 				userId,
 				title,
@@ -35,14 +41,36 @@ export class ResumesRepository {
 				...(statusCode && { statusCode }),
 			},
 		});
-
+	
 		return createdResume;
 	}; //createResume
 
-    deleteResume = async (resumeId) => {
-        const deletedResume = await prisma.resumes.delete({
+	findResumeById = async (resumeId) => {
+		const resume = await this.prisma.resumes.findUnique({
 			where: { resumeId: +resumeId },
-		}); 
-        return deletedResume;
-    }; //deleteResume
+		});
+
+		return resume;
+	}; //findResumeById
+
+	updateResume = async (resumeId, title, contents, statusCode) => {
+		const updatedResume = await this.prisma.resumes.update({
+			where: {
+				resumeId: +resumeId,
+			},
+			data: {
+				title,
+				contents,
+				statusCode,
+			},
+		});
+		return updatedResume;
+	}; //updateResume
+
+	deleteResume = async (resumeId) => {
+		const deletedResume = await this.prisma.resumes.delete({
+			where: { resumeId: +resumeId },
+		});
+		return deletedResume;
+	}; //deleteResume
 }
