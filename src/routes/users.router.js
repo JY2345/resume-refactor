@@ -1,6 +1,7 @@
 import express from 'express';
 import { prisma } from '../../config/index.js';
 import authMiddleware from '../middlewares/need-signin.middleware.js';
+import {errorHandler} from '../middlewares/error-handling.middleware.js';
 import { UsersRepository } from '../repositories/users.repository.js';
 import { UsersService } from '../services/users.service.js';
 import { UsersController } from '../controllers/users.controller.js';
@@ -19,7 +20,7 @@ router.post('/signup', usersController.userSignUp);
 /**
  * 로그인
  */
-router.post('/signin', usersController.userSignIn);
+router.post('/signin', authMiddleware, usersController.userSignIn);
 
 /**
  * 회원 목록 조회
@@ -40,5 +41,7 @@ router.get('/users/:userId', usersController.updateUserInfo);
  * 회원 삭제(탈퇴)
  */
 router.delete('/resumes/:resumeId', usersController.userSignOut);
+
+router.use(errorHandler);
 
 export default router;

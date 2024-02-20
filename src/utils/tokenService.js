@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../config/index.js';
+import { ApiError } from '../middlewares/error-handling.middleware.js';
 
 export async function saveRefreshToken(userId, token) {
 	const expiryDate = new Date();
 
 	if (!userId) {
-		throw new Error('로그인이 필요합니다.');
+		throw new ApiError(400, '로그인이 필요합니다.');
 	}
+
 	const existingToken = await prisma.refreshTokens.findUnique({
 		where: { userId: userId },
 	});
