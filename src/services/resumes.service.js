@@ -1,9 +1,6 @@
-import { ResumesRepository } from '../repositories/resumes.repository.js';
 import { ApiError } from '../middlewares/error-handling.middleware.js';
 
 export class ResumesService {
-	//resumesRepository = new ResumesRepository();
-
 	constructor(resumesRepository) {
 		this.resumesRepository = resumesRepository;
 	}

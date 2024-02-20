@@ -1,4 +1,6 @@
 import { ApiError } from '../middlewares/error-handling.middleware.js';
+import { checkPassword } from '../utils/bcrypt.js';
+import jwt from 'jsonwebtoken';
 
 export class UsersController {
 
@@ -21,8 +23,6 @@ export class UsersController {
 		try {
 			const { userName, email, password, authCode } = req.body;
 
-            console.log("controller : " + password)
-
 			const createdUser = await this.usersService.createUser(
 				userName,
 				email,
@@ -34,6 +34,37 @@ export class UsersController {
 			next(err);
 		}
 	};
+
+    /* 로그인 */
+    userSignIn = async (req, res, next) =>{
+        try {
+			const { email, password } = req.body;
+			const user = await this.usersService.findUserByEmail(email);
+
+			if (!user) {
+				throw new ApiError(
+					404,
+					`해당 유저가 존재하지 않습니다.`,
+				);
+			}
+            console.log(user);
+            // 비밀번호 검증
+            console.log("test : "+ user.password)
+            const isPasswordMatch = await checkPassword(password, user.password);
+
+            if (!isPasswordMatch) {
+                throw new ApiError(401, '비밀번호가 일치하지 않습니다.');
+            }
+			return res.status(200).json({ message: '로그인 성공' });
+
+		} catch (err) {
+			if (err instanceof ApiError) {
+                res.status(err.status).json({ message: err.message });
+            } else {
+                res.status(500).json({ message: '서버에서 에러가 발생했습니다.' });
+            }
+		}
+    }
 
 	/* 유저 1건 조회 */
 	getUserById = async (req, res, next) => {

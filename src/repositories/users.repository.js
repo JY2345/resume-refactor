@@ -47,6 +47,14 @@ export class UsersRepository {
 		return user;
 	}; //findUserById
 
+    findUserByEmail = async (email) => {
+        const user = await this.prisma.users.findFirst({
+           where : { email : email } 
+        });
+
+        return user;
+    } //findUserByEmail
+
 	updateUserInfo = async (userId, userName, email, authCode) => {
 		const updatedUser = await this.prisma.users.update({
 			where: {
@@ -67,4 +75,6 @@ export class UsersRepository {
 		});
 		return deletedUser;
 	}; //deleteUser
+
+    
 }
