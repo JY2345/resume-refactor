@@ -1,15 +1,15 @@
 // import { ResumesService } from '../services/resumes.service.js';
-import {ApiError} from '../middlewares/error-handling.middleware.js'; 
+import { ApiError } from '../middlewares/error-handling.middleware.js';
 
 export class ResumesController {
 	//resumesService = new ResumesService();
-	constructor(resumesService){
+	constructor(resumesService) {
 		this.resumesService = resumesService;
 	}
 
 	/* 조회 */
 	getResumes = async (req, res, next) => {
-	try {
+		try {
 			const resumes = await this.resumesService.findAllResumes();
 			return res.status(200).json({ data: resumes });
 		} catch {
@@ -40,7 +40,10 @@ export class ResumesController {
 			const { resumeId } = req.params;
 			const resume = await this.resumesService.findResumeById(+resumeId);
 			if (!resume) {
-				throw new ApiError(404, `아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`);
+				throw new ApiError(
+					404,
+					`아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`,
+				);
 			}
 
 			return res.status(200).json({ data: resume });
@@ -48,7 +51,7 @@ export class ResumesController {
 			if (err instanceof ApiError) {
 				res.status(err.status).json({ message: err.message });
 			} else {
-				res.status(500).json({ message: "서버에서 에러가 발생했습니다." });
+				res.status(500).json({ message: '서버에서 에러가 발생했습니다.' });
 			}
 		}
 	};
@@ -56,16 +59,17 @@ export class ResumesController {
 	/* 이력서 업데이트 */
 	updateResume = async (req, res, next) => {
 		try {
-			const {resumeId} = req.params;
+			const { resumeId } = req.params;
 			const { title, contents, statusCode } = req.body;
 
 			const updatedResume = await this.resumesService.updateResume({
+				resumeId,
 				title,
 				contents,
 				statusCode,
 			});
 
-			return res.status(200).json({data:updatedResume});
+			return res.status(200).json({ data: updatedResume });
 		} catch (err) {
 			next(err);
 		}
@@ -74,11 +78,11 @@ export class ResumesController {
 	/* 이력서 삭제 */
 	deleteResume = async (req, res, next) => {
 		try {
-			const {resumeId} = req.params;
+			const { resumeId } = req.params;
 			const deletedResume = await this.resumesService.deleteResume(resumeId);
-			return res.status(200).json({data : deletedResume});
+			return res.status(200).json({ data: deletedResume });
 		} catch (err) {
 			next(err);
-		};
+		}
 	};
 }

@@ -1,9 +1,8 @@
 import { prisma } from '../../config/index.js';
 
 export class ResumesRepository {
-
 	// 테스트를 위해 의존성 주입
-	constructor(prisma){
+	constructor(prisma) {
 		this.prisma = prisma;
 	}
 
@@ -41,7 +40,7 @@ export class ResumesRepository {
 				...(statusCode && { statusCode }),
 			},
 		});
-	
+
 		return createdResume;
 	}; //createResume
 

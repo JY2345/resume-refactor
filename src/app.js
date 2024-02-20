@@ -1,9 +1,8 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 //import { swaggerUi, specs } from './utils/swagger.js';
-// import UsersRouter from './routers/users.router.js';
-// import ResumesRouter from './routers/resumes.router.js';
-import ResumesRouter from './routes/resumes.router.js'
+ import UsersRouter from './routes/users.router.js';
+import ResumesRouter from './routes/resumes.router.js';
 import KakaoAuthRouter from './routers/auth.router.js';
 import { ErrorHandlingMiddleware } from './middlewares/error-handling.middleware.js';
 import {
@@ -18,8 +17,7 @@ const PORT = 3018;
 app.use(express.json());
 app.use(cookieParser());
 //app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
-app.use('/api', [ ResumesRouter]);
-//app.use('/api', [UsersRouter, ResumesRouter]);
+app.use('/api', [UsersRouter, ResumesRouter]);
 app.use('/auth', KakaoAuthRouter);
 //app.use(ErrorHandlingMiddleware);
 
