@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
  import UsersRouter from './routes/users.router.js';
 import ResumesRouter from './routes/resumes.router.js';
 import KakaoAuthRouter from './routers/auth.router.js';
-import { ErrorHandlingMiddleware } from './middlewares/error-handling.middleware.js';
 import {
 	createAccessToken,
 	createRefreshToken,

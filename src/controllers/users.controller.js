@@ -1,6 +1,10 @@
-import { ApiError } from '../middlewares/error-handling.middleware.js';
 import { checkPassword } from '../utils/bcrypt.js';
-import jwt from 'jsonwebtoken';
+import {
+	createAccessToken,
+	createRefreshToken,
+	saveRefreshToken,
+} from '../utils/tokenService.js';
+import { ApiError } from '../middlewares/error-handling.middleware.js';
 
 export class UsersController {
 
@@ -47,21 +51,27 @@ export class UsersController {
 					`해당 유저가 존재하지 않습니다.`,
 				);
 			}
-            console.log(user);
-            // 비밀번호 검증
-            console.log("test : "+ user.password)
+
             const isPasswordMatch = await checkPassword(password, user.password);
 
             if (!isPasswordMatch) {
-                throw new ApiError(401, '비밀번호가 일치하지 않습니다.');
+                throw new ApiError(401, '아이디 혹은 비밀번호가 일치하지 않습니다.');
             }
-			return res.status(200).json({ message: '로그인 성공' });
+
+            const accessToken = createAccessToken(user.userId);
+		    const refreshToken = createRefreshToken(user.userId);
+
+            await saveRefreshToken(user.userId, refreshToken);
+			res.cookie('accessToken', accessToken, { httpOnly: true });
+			res.cookie('refreshToken', refreshToken, { httpOnly: true });
+            
+			return res.status(200).json({ message: '로그인 되었습니다.' });
 
 		} catch (err) {
 			if (err instanceof ApiError) {
                 res.status(err.status).json({ message: err.message });
             } else {
-                res.status(500).json({ message: '서버에서 에러가 발생했습니다.' });
+                next(err);
             }
 		}
     }
@@ -71,19 +81,13 @@ export class UsersController {
 		try {
 			const { userId } = req.params;
 			const user = await this.usersService.findUserById(+userId);
-			if (!user) {
-				throw new ApiError(
-					404,
-					`해당 유저가 존재하지 않습니다.`,
-				);
-			}
 
 			return res.status(200).json({ data: user });
 		} catch (err) {
 			if (err instanceof ApiError) {
 				res.status(err.status).json({ message: err.message });
 			} else {
-				res.status(500).json({ message: '서버에서 에러가 발생했습니다.' });
+				next(err); 
 			}
 		}
 	};
@@ -103,7 +107,11 @@ export class UsersController {
 
 			return res.status(200).json({ data: updatedUser });
 		} catch (err) {
-			next(err);
+			if (err instanceof ApiError) {
+				res.status(err.status).json({ message: err.message });
+			} else {
+				next(err); 
+			}
 		}
 	};
 
