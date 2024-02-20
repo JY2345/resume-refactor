@@ -14,12 +14,12 @@ const usersController = new UsersController(usersService);
 /**
  * 회원가입
  */
-router.post('/users', usersController.userSignUp);
+router.post('/signup', usersController.userSignUp);
 
 /**
  * 로그인
  */
-//router.post('/resumes', usersController.userSignIn);
+router.post('/signin', usersController.userSignIn);
 
 /**
  * 회원 목록 조회

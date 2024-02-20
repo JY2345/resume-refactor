@@ -1,5 +1,5 @@
 import { ApiError } from '../middlewares/error-handling.middleware.js';
-import { hashPassword, checkPassword } from '../utils/bcrypt.js';
+import { hashPassword } from '../utils/bcrypt.js';
 
 
 export class UsersService {
@@ -81,6 +81,25 @@ export class UsersService {
 			authCode : user.authCode,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
+		};
+	};
+
+    /** 
+     * 이메일로 조회
+     */
+    findUserByEmail= async (email) => {
+		const user = await this.usersRepository.findUserByEmail(email);
+
+		if (!user) {
+			throw new ApiError(
+				404,
+				`존재하지 않는 유저입니다.`,
+			);
+		}
+
+		return {
+            email : user.email,
+			password : user.password
 		};
 	};
 
