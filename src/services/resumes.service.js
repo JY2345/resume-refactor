@@ -1,10 +1,10 @@
 import { ResumesRepository } from '../repositories/resumes.repository.js';
-import {ApiError} from '../middlewares/error-handling.middleware.js'; 
+import { ApiError } from '../middlewares/error-handling.middleware.js';
 
 export class ResumesService {
 	//resumesRepository = new ResumesRepository();
 
-	constructor(resumesRepository){
+	constructor(resumesRepository) {
 		this.resumesRepository = resumesRepository;
 	}
 
@@ -64,13 +64,15 @@ export class ResumesService {
 	 * @returns
 	 */
 	findResumeById = async (resumeId) => {
-
 		const resume = await this.resumesRepository.findResumeById(resumeId);
 
 		if (!resume) {
-			throw new ApiError(404, `아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`);
+			throw new ApiError(
+				404,
+				`아이디가 ${resumeId}인 이력서가 존재하지 않습니다.`,
+			);
 		}
-	
+
 		return {
 			resumeId: resume.resumeId,
 			userId: resume.userId,
@@ -82,7 +84,6 @@ export class ResumesService {
 	};
 
 	updateResume = async (resumeId, title, contents, statusCode) => {
-
 		const resume = await this.resumesRepository.findResumeById(resumeId);
 
 		if (!resume) throw new ApiError('존재하지 않는 이력서입니다.');
@@ -108,12 +109,12 @@ export class ResumesService {
 		await this.resumesRepository.deleteResume(resumeId);
 
 		return {
-			resumeId: createdResume.resumeId,
-			userId: createdResume.userId,
-			title: createdResume.title,
-			contents: createdResume.contents,
-			createdAt: createdResume.createdAt,
-			updatedAt: createdResume.updatedAt,
+			resumeId: resume.resumeId,
+			userId: resume.userId,
+			title: resume.title,
+			contents: resume.contents,
+			createdAt: resume.createdAt,
+			updatedAt: resume.updatedAt,
 		};
 	};
 }

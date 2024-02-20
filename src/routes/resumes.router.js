@@ -27,4 +27,9 @@ router.get('/resumes', resumesController.getResumes);
  */
 router.get('/resumes/:resumeId', resumesController.getResumeById);
 
+/**
+ * 이력서 삭제
+ */
+router.delete('/resumes/:resumeId', resumesController.deleteResume);
+
 export default router;
