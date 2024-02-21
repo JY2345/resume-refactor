@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../../config/index.js';
 import authMiddleware from '../middlewares/need-signin.middleware.js';
-import {errorHandler} from '../middlewares/error-handling.middleware.js';
+import { errorHandler } from '../middlewares/error-handling.middleware.js';
 import { UsersRepository } from '../repositories/users.repository.js';
 import { UsersService } from '../services/users.service.js';
 import { UsersController } from '../controllers/users.controller.js';

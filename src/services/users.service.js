@@ -2,7 +2,6 @@ import { ApiError } from '../middlewares/error-handling.middleware.js';
 import { hashPassword } from '../utils/bcrypt.js';
 
 export class UsersService {
-
 	constructor(usersRepository) {
 		this.usersRepository = usersRepository;
 	}
@@ -14,11 +13,8 @@ export class UsersService {
 	findAllUsers = async () => {
 		const users = await this.usersRepository.findAllUsers();
 
-        if (!users) {
-			throw new ApiError(
-				404,
-				`유저 데이터가 없습니다.`,
-			);
+		if (!users) {
+			throw new ApiError(404, `유저 데이터가 없습니다.`);
 		}
 
 		users.sort((a, b) => {
@@ -46,23 +42,17 @@ export class UsersService {
 	 * @returns
 	 */
 	createUser = async (userName, email, password, authCode) => {
+		const existingUser = await this.usersRepository.findUserByEmail(email);
+		if (existingUser) {
+			throw new ApiError(409, `이미 등록된 이메일입니다.`);
+		}
 
-
-        const existingUser = await this.usersRepository.findUserByEmail(email);
-        if (existingUser) {
-            throw new ApiError(
-                409,
-                `이미 등록된 이메일입니다.`
-            );
-        }
-
-        const hashedPassword = await hashPassword(password);
-		const createdUser = await this.usersRepository.
-        createUser(
-            userName,
-            email,
-            hashedPassword,
-            authCode,
+		const hashedPassword = await hashPassword(password);
+		const createdUser = await this.usersRepository.createUser(
+			userName,
+			email,
+			hashedPassword,
+			authCode,
 		);
 
 		return {
@@ -83,39 +73,33 @@ export class UsersService {
 		const user = await this.usersRepository.findUserById(userId);
 
 		if (!user) {
-			throw new ApiError(
-				404,
-				`존재하지 않는 유저입니다.`,
-			);
+			throw new ApiError(404, `존재하지 않는 유저입니다.`);
 		}
 
 		return {
 			userId: user.userId,
 			userName: user.userName,
 			email: user.email,
-			authCode : user.authCode,
+			authCode: user.authCode,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
 		};
 	};
 
-    /** 
-     * 이메일로 조회
-     */
-    findUserByEmail= async (email) => {
+	/**
+	 * 이메일로 조회
+	 */
+	findUserByEmail = async (email) => {
 		const user = await this.usersRepository.findUserByEmail(email);
 
 		if (!user) {
-			throw new ApiError(
-				404,
-				`존재하지 않는 유저입니다.`,
-			);
+			throw new ApiError(404, `존재하지 않는 유저입니다.`);
 		}
 
 		return {
-            userId : user.userId,
-            email : user.email,
-			password : user.password
+			userId: user.userId,
+			email: user.email,
+			password: user.password,
 		};
 	};
 
@@ -123,10 +107,7 @@ export class UsersService {
 		const user = await this.usersRepository.findUserById(userId);
 
 		if (!user) {
-			throw new ApiError(
-				404,
-				`존재하지 않는 유저입니다.`,
-			);
+			throw new ApiError(404, `존재하지 않는 유저입니다.`);
 		}
 
 		await this.usersRepository.updateUserInfo(userName, email, authCode);
@@ -137,7 +118,7 @@ export class UsersService {
 			userId: user.userId,
 			userName: user.userName,
 			email: user.email,
-			authCode : user.authCode,
+			authCode: user.authCode,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
 		};
@@ -147,10 +128,7 @@ export class UsersService {
 		const user = await this.usersRepository.findUserById(userId);
 
 		if (!user) {
-			throw new ApiError(
-				404,
-				`존재하지 않는 유저입니다.`,
-			);
+			throw new ApiError(404, `존재하지 않는 유저입니다.`);
 		}
 
 		await this.usersRepository.deleteUser(userId);
@@ -159,26 +137,25 @@ export class UsersService {
 			userId: user.userId,
 			userName: user.userName,
 			email: user.email,
-			authCode : user.authCode,
+			authCode: user.authCode,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
 		};
 	};
 
-    /* 토큰 찾기 */
-    findRefreshToken = async (refreshToken) => {
-		const existingToken = await this.usersRepository.findRefreshToken(refreshToken);
+	/* 토큰 찾기 */
+	findRefreshToken = async (refreshToken) => {
+		const existingToken =
+			await this.usersRepository.findRefreshToken(refreshToken);
 
 		if (!existingToken) {
-			throw new ApiError(
-				401,
-				`생성된 토큰 정보를 확인할 수 없습니다.`,
-			);
+			throw new ApiError(401, `생성된 토큰 정보를 확인할 수 없습니다.`);
 		}
-    }
+	};
 
-    /* 토큰 데이터 삭제 */
-    deleteRefreshToken = async (refreshToken) => {
-        const deletedToken = await this.usersRepository.deleteRefreshToken(refreshToken); 
-    }
+	/* 토큰 데이터 삭제 */
+	deleteRefreshToken = async (refreshToken) => {
+		const deletedToken =
+			await this.usersRepository.deleteRefreshToken(refreshToken);
+	};
 }

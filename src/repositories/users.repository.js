@@ -2,7 +2,6 @@ import { prisma } from '../../config/index.js';
 import { hashPassword } from '../utils/bcrypt.js';
 
 export class UsersRepository {
-
 	constructor(prisma) {
 		this.prisma = prisma;
 	}
@@ -29,10 +28,10 @@ export class UsersRepository {
 	createUser = async (userName, email, hashedPassword, authCode) => {
 		const createdUser = await this.prisma.users.create({
 			data: {
-                userName,
-                email,
-                password : hashedPassword,
-                authCode,
+				userName,
+				email,
+				password: hashedPassword,
+				authCode,
 			},
 		});
 
@@ -47,13 +46,13 @@ export class UsersRepository {
 		return user;
 	}; //findUserById
 
-    findUserByEmail = async (email) => {
-        const user = await this.prisma.users.findFirst({
-           where : { email : email } 
-        });
+	findUserByEmail = async (email) => {
+		const user = await this.prisma.users.findFirst({
+			where: { email: email },
+		});
 
-        return user;
-    } //findUserByEmail
+		return user;
+	}; //findUserByEmail
 
 	updateUserInfo = async (userId, userName, email, authCode) => {
 		const updatedUser = await this.prisma.users.update({
@@ -76,17 +75,17 @@ export class UsersRepository {
 		return deletedUser;
 	}; //deleteUser
 
-    findRefreshToken = async (refreshToken) => {
-        const existingToken = await prisma.refreshTokens.findUnique({
+	findRefreshToken = async (refreshToken) => {
+		const existingToken = await prisma.refreshTokens.findUnique({
 			where: { token: refreshToken },
 		});
 		return existingToken;
-    } //findRefreshToken
+	}; //findRefreshToken
 
-    deleteRefreshToken = async (refreshToken) => {
-        const deletedToken = await prisma.refreshTokens.delete({
-            where: { token: refreshToken },
-        });
+	deleteRefreshToken = async (refreshToken) => {
+		const deletedToken = await prisma.refreshTokens.delete({
+			where: { token: refreshToken },
+		});
 		return deletedToken;
-    } //deleteRefreshToken
+	}; //deleteRefreshToken
 }
