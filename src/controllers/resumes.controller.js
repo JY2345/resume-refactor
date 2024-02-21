@@ -60,14 +60,18 @@ export class ResumesController {
 	updateResume = async (req, res, next) => {
 		try {
 			const { resumeId } = req.params;
+			const userId = req.user.userId;
+			const authCode = req.user.authCode;
 			const { title, contents, statusCode } = req.body;
 
-			const updatedResume = await this.resumesService.updateResume({
+			const updatedResume = await this.resumesService.updateResume(
 				resumeId,
+				userId,
 				title,
 				contents,
 				statusCode,
-			});
+				authCode,
+			);
 
 			return res.status(200).json({ data: updatedResume });
 		} catch (err) {
@@ -79,7 +83,14 @@ export class ResumesController {
 	deleteResume = async (req, res, next) => {
 		try {
 			const { resumeId } = req.params;
-			const deletedResume = await this.resumesService.deleteResume(resumeId);
+			const userId = req.user.userId;
+			const authCode = req.user.authCode;
+
+			const deletedResume = await this.resumesService.deleteResume(
+				resumeId,
+				userId,
+				authCode,
+			);
 			return res.status(200).json({ data: deletedResume });
 		} catch (err) {
 			next(err);

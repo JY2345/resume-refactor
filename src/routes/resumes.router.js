@@ -1,6 +1,6 @@
 import express from 'express';
 import { prisma } from '../../config/index.js';
-import {errorHandler} from '../middlewares/error-handling.middleware.js';
+import { errorHandler } from '../middlewares/error-handling.middleware.js';
 import authMiddleware from '../middlewares/need-signin.middleware.js';
 import { ResumesRepository } from '../repositories/resumes.repository.js';
 import { ResumesService } from '../services/resumes.service.js';
@@ -16,22 +16,38 @@ const resumesController = new ResumesController(resumesService);
 /**
  * 이력서 등록
  */
-router.post('/resumes', resumesController.createResume);
+router.post('/resumes', authMiddleware, resumesController.createResume);
 
 /**
  * 이력서 전체 조회
  */
-router.get('/resumes', resumesController.getResumes);
+router.get('/resumes', authMiddleware, resumesController.getResumes);
 
 /**
  * 이력서 하나 조회
  */
-router.get('/resumes/:resumeId', resumesController.getResumeById);
+router.get(
+	'/resumes/:resumeId',
+	authMiddleware,
+	resumesController.getResumeById,
+);
+/**
+ * 이력서 수정
+ */
+router.patch(
+	'/resumes/:resumeId',
+	authMiddleware,
+	resumesController.updateResume,
+);
 
 /**
  * 이력서 삭제
  */
-router.delete('/resumes/:resumeId', resumesController.deleteResume);
+router.delete(
+	'/resumes/:resumeId',
+	authMiddleware,
+	resumesController.deleteResume,
+);
 
 router.use(errorHandler);
 

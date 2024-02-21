@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../../config/index.js';
 import authMiddleware from '../middlewares/need-signin.middleware.js';
-import {errorHandler} from '../middlewares/error-handling.middleware.js';
+import { errorHandler } from '../middlewares/error-handling.middleware.js';
 import { UsersRepository } from '../repositories/users.repository.js';
 import { UsersService } from '../services/users.service.js';
 import { UsersController } from '../controllers/users.controller.js';
@@ -40,7 +40,7 @@ router.get('/users/:userId', authMiddleware, usersController.getUserById);
 /**
  * 회원정보 수정
  */
-router.get('/users/:userId', authMiddleware, usersController.updateUserInfo);
+router.patch('/users/:userId', authMiddleware, usersController.updateUserInfo);
 
 /**
  * 회원 삭제(탈퇴)

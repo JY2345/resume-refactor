@@ -12,7 +12,7 @@ let mockPrisma = {
 };
 
 let resumesRepository = new ResumesRepository(mockPrisma);
-describe('Posts Repository Unit Test', () => {
+describe('Resumes Repository Unit Test', () => {
 	// 테스트 실행시키기 전에 실행...
 	beforeEach(() => {
 		jest.resetAllMocks(); // Mock 초기화
