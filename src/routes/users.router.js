@@ -20,27 +20,32 @@ router.post('/signup', usersController.userSignUp);
 /**
  * 로그인
  */
-router.post('/signin', authMiddleware, usersController.userSignIn);
+router.post('/signin', usersController.userSignIn);
+
+/**
+ * 로그아웃
+ */
+router.post('/signout', authMiddleware, usersController.userSignOut);
 
 /**
  * 회원 목록 조회
  */
-router.get('/users', usersController.getUsers);
+router.get('/users', authMiddleware, usersController.getUsers);
 
 /**
  * 회원 한 명 정보 조회
  */
-router.get('/users/:userId', usersController.getUserById);
+router.get('/users/:userId', authMiddleware, usersController.getUserById);
 
 /**
  * 회원정보 수정
  */
-router.get('/users/:userId', usersController.updateUserInfo);
+router.get('/users/:userId', authMiddleware, usersController.updateUserInfo);
 
 /**
  * 회원 삭제(탈퇴)
  */
-router.delete('/resumes/:resumeId', usersController.userSignOut);
+router.delete('/users/:userId', authMiddleware, usersController.deleteUser);
 
 router.use(errorHandler);
 

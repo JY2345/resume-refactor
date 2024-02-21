@@ -1,9 +1,9 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 //import { swaggerUi, specs } from './utils/swagger.js';
- import UsersRouter from './routes/users.router.js';
+import UsersRouter from './routes/users.router.js';
 import ResumesRouter from './routes/resumes.router.js';
-import KakaoAuthRouter from './routers/auth.router.js';
+//import KakaoAuthRouter from './routers/auth.router.js';
 import {
 	createAccessToken,
 	createRefreshToken,
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 //app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api', [UsersRouter, ResumesRouter]);
-app.use('/auth', KakaoAuthRouter);
+//app.use('/auth', KakaoAuthRouter);
 //app.use(ErrorHandlingMiddleware);
 
 app.post('/tokens', (req, res) => {

@@ -27,6 +27,18 @@ export class UsersController {
 		try {
 			const { userName, email, password, authCode } = req.body;
 
+            let missingFields = [];
+            if (!userName) missingFields.push("회원명은");
+            if (!email) missingFields.push("이메일은");
+            if (!password) missingFields.push("패스워드는");
+            if (!authCode) missingFields.push("권한구분은");
+            if (missingFields.length > 0) {
+                throw new ApiError(
+                    400,
+                    `${missingFields.join(", ")} 필수값입니다.`
+                );
+            }
+
 			const createdUser = await this.usersService.createUser(
 				userName,
 				email,
@@ -44,13 +56,6 @@ export class UsersController {
         try {
 			const { email, password } = req.body;
 			const user = await this.usersService.findUserByEmail(email);
-
-			if (!user) {
-				throw new ApiError(
-					404,
-					`해당 유저가 존재하지 않습니다.`,
-				);
-			}
 
             const isPasswordMatch = await checkPassword(password, user.password);
 
@@ -116,7 +121,7 @@ export class UsersController {
 	};
 
 	/* 회원 탈퇴 */
-	userSignOut = async (req, res, next) => {
+	deleteUser = async (req, res, next) => {
 		try {
 			const { userId } = req.params;
 			const deletedUser = await this.usersService.deleteUser(userId);
@@ -125,4 +130,32 @@ export class UsersController {
 			next(err);
 		}
 	};
+
+    /* 로그아웃 */
+    userSignOut = async (req, res, next) => {
+        try {
+            const { refreshToken } = req.cookies;
+            if (!refreshToken) {
+				throw new ApiError(
+					400,
+					`로그아웃할 사용자 정보가 없습니다.`,
+				);
+			}
+
+			const existingToken = await this.usersService.findRefreshToken(refreshToken);
+
+            if (existingToken) {
+                const signout = 
+                await this.usersService.deleteRefreshToken(refreshToken);
+            }
+    
+		    res.clearCookie('accessToken');
+		    res.clearCookie('refreshToken');
+
+            return res.status(200).json({ message: '성공적으로 로그아웃되었습니다.' });
+
+        } catch (err) {
+			next(err);
+        }
+    }
 }
