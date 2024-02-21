@@ -56,7 +56,6 @@ describe('Users Controller Unit Test', () => {
 			userName: '관리자계정',
 			email: 'admin@mail.com',
 			authCode: 'admin',
-			
 
 			// TODO
 		};

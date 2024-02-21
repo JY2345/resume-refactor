@@ -40,7 +40,7 @@ router.get('/users/:userId', authMiddleware, usersController.getUserById);
 /**
  * 회원정보 수정
  */
-router.get('/users/:userId', authMiddleware, usersController.updateUserInfo);
+router.patch('/users/:userId', authMiddleware, usersController.updateUserInfo);
 
 /**
  * 회원 삭제(탈퇴)

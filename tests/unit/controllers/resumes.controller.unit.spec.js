@@ -1,5 +1,6 @@
 import { beforeEach, jest } from '@jest/globals';
 import { ResumesController } from '../../../src/controllers/resumes.controller';
+import { ApiError } from '../../../src/middlewares/error-handling.middleware';
 
 const mockResumesService = {
 	findAllResumes: jest.fn(),
@@ -49,7 +50,10 @@ describe('Resumes Controller Unit Test', () => {
 			},
 		];
 
-		//TODO
+		mockResumesService.findAllResumes.mockResolvedValue(sampleResumes);
+		await resumesController.getResumes(mockRequest, mockResponse, mockNext);
+		expect(mockResponse.status).toHaveBeenCalledWith(200);
+		expect(mockResponse.json).toHaveBeenCalledWith({ data: sampleResumes });
 	});
 
 	test('createResume Method by Success', async () => {
@@ -58,15 +62,25 @@ describe('Resumes Controller Unit Test', () => {
 			title: '이력서 생성 컨트롤러 테스트 : 타이틀',
 			contents: '이력서 생성 컨트롤러 테스트 : 본문',
 			statusCode: 'APPLY',
-
-			// TODO
 		};
+
+		mockRequest.body = createResumeRequestBodyParams;
+		mockResumesService.createResume.mockReturnValue(
+			Promise.resolve('이력서 생성 완료'),
+		);
+
+		await resumesController.createResume(mockRequest, mockResponse, mockNext);
+
+		expect(mockResumesService.createResume).toHaveBeenCalledWith(
+			createResumeRequestBodyParams.userId,
+			createResumeRequestBodyParams.title,
+			createResumeRequestBodyParams.contents,
+			createResumeRequestBodyParams.statusCode,
+		);
+		expect(mockResponse.status).toHaveBeenCalledWith(201);
+		expect(mockResponse.json).toHaveBeenCalledWith({
+			data: '이력서 생성 완료',
+		});
 	});
 
-	test('createResume Method by Invalid Params Error', async () => {
-		mockRequest.body = {
-			userId: 0,
-			title: 'invalid Params Error',
-		};
-	});
 });

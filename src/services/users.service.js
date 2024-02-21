@@ -103,14 +103,14 @@ export class UsersService {
 		};
 	};
 
-	updateUserInfo = async (userId, userName, email) => {
+	updateUserInfo = async (userId, userName, authCode) => {
 		const user = await this.usersRepository.findUserById(userId);
 
 		if (!user) {
 			throw new ApiError(404, `존재하지 않는 유저입니다.`);
 		}
 
-		await this.usersRepository.updateUserInfo(userName, email, authCode);
+		await this.usersRepository.updateUserInfo(userId, userName,authCode);
 
 		const updatedUser = await this.usersRepository.findUserById(userId);
 

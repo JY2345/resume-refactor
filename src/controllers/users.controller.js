@@ -96,14 +96,13 @@ export class UsersController {
 	updateUserInfo = async (req, res, next) => {
 		try {
 			const { userId } = req.params;
-			const { userName, email, authCode } = req.body;
-
-			const updatedUser = await this.usersService.updateUserInfo({
+			const { userName, authCode } = req.body;
+			
+			const updatedUser = await this.usersService.updateUserInfo(
 				userId,
 				userName,
-				email,
 				authCode,
-			});
+			);
 
 			return res.status(200).json({ data: updatedUser });
 		} catch (err) {

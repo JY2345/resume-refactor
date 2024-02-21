@@ -54,14 +54,13 @@ export class UsersRepository {
 		return user;
 	}; //findUserByEmail
 
-	updateUserInfo = async (userId, userName, email, authCode) => {
+	updateUserInfo = async (userId, userName, authCode) => {
 		const updatedUser = await this.prisma.users.update({
 			where: {
 				userId: +userId,
 			},
 			data: {
 				userName,
-				email,
 				authCode,
 			},
 		});

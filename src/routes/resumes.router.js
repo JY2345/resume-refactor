@@ -21,21 +21,33 @@ router.post('/resumes', authMiddleware, resumesController.createResume);
 /**
  * 이력서 전체 조회
  */
-router.get('/resumes',authMiddleware, resumesController.getResumes);
+router.get('/resumes', authMiddleware, resumesController.getResumes);
 
 /**
  * 이력서 하나 조회
  */
-router.get('/resumes/:resumeId', authMiddleware,resumesController.getResumeById);
+router.get(
+	'/resumes/:resumeId',
+	authMiddleware,
+	resumesController.getResumeById,
+);
 /**
  * 이력서 수정
  */
-router.patch('/resumes/:resumeId', authMiddleware,resumesController.updateResume);
+router.patch(
+	'/resumes/:resumeId',
+	authMiddleware,
+	resumesController.updateResume,
+);
 
 /**
  * 이력서 삭제
  */
-router.delete('/resumes/:resumeId', authMiddleware, resumesController.deleteResume);
+router.delete(
+	'/resumes/:resumeId',
+	authMiddleware,
+	resumesController.deleteResume,
+);
 
 router.use(errorHandler);
 

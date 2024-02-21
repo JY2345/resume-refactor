@@ -68,10 +68,7 @@ export class ResumesService {
 		const resume = await this.resumesRepository.findResumeById(resumeId);
 
 		if (!resume) {
-			throw new ApiError(
-				404,
-				`해당 이력서가 없습니다.`,
-			);
+			throw new ApiError(404, `해당 이력서가 없습니다.`);
 		}
 
 		return {
@@ -84,40 +81,49 @@ export class ResumesService {
 		};
 	};
 
-	updateResume = async (resumeId, userId, title, contents, statusCode, authCode) => {
+	updateResume = async (
+		resumeId,
+		userId,
+		title,
+		contents,
+		statusCode,
+		authCode,
+	) => {
 		const resume = await this.resumesRepository.findResumeById(resumeId);
 
 		if (!resume) {
-			throw new ApiError(
-				404,
-				`해당 이력서가 없습니다.`,
-			);
+			throw new ApiError(404, `해당 이력서가 없습니다.`);
 		}
-		console.log(resume.authCode)
-		if (resume.userId != userId  && authCode !== 'admin') {
+
+		if (resume.userId != userId && authCode !== 'admin') {
 			throw new ApiError(403, `본인의 이력서만 수정 가능합니다.`);
 		}
 
-		await this.resumesRepository.updateResume(resumeId, title, contents, statusCode);
+		await this.resumesRepository.updateResume(
+			resumeId,
+			title,
+			contents,
+			statusCode,
+		);
 
 		return {
-			message : '정상 수정되었습니다.',
+			message: '정상 수정되었습니다.',
 		};
 	};
 
-	deleteResume = async (resumeId,userId) => {
+	deleteResume = async (resumeId, userId, authCode) => {
 		const resume = await this.resumesRepository.findResumeById(resumeId);
 		if (!resume) {
 			throw new ApiError(404, `존재하지 않는 이력서입니다.`);
 		}
-		if (resume.userId !== userId) {
+		if (resume.userId != userId && authCode !== 'admin') {
 			throw new ApiError(403, `본인의 이력서만 삭제 가능합니다.`);
 		}
 
 		await this.resumesRepository.deleteResume(resumeId);
 
 		return {
-			message : '정상 삭제되었습니다.',
+			message: '정상 삭제되었습니다.',
 		};
 	};
 }
