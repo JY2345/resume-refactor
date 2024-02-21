@@ -2,7 +2,7 @@ import { prisma } from '../../config/index.js';
 import { hashPassword } from '../utils/bcrypt.js';
 
 export class UsersRepository {
-	// 테스트를 위해 의존성 주입
+
 	constructor(prisma) {
 		this.prisma = prisma;
 	}
@@ -76,5 +76,17 @@ export class UsersRepository {
 		return deletedUser;
 	}; //deleteUser
 
-    
+    findRefreshToken = async (refreshToken) => {
+        const existingToken = await prisma.refreshTokens.findUnique({
+			where: { token: refreshToken },
+		});
+		return existingToken;
+    } //findRefreshToken
+
+    deleteRefreshToken = async (refreshToken) => {
+        const deletedToken = await prisma.refreshTokens.delete({
+            where: { token: refreshToken },
+        });
+		return deletedToken;
+    } //deleteRefreshToken
 }

@@ -12,6 +12,13 @@ export class ResumesService {
 	findAllResumes = async () => {
 		const resumes = await this.resumesRepository.findAllResumes();
 
+		if (!resumes) {
+			throw new ApiError(
+				404,
+				`이력서 데이터가 없습니다.`,
+			);
+		}
+
 		resumes.sort((a, b) => {
 			return b.createdAt - a.createdAt;
 		});
@@ -101,7 +108,12 @@ export class ResumesService {
 
 	deleteResume = async (resumeId) => {
 		const resume = await this.resumesRepository.findResumeById(resumeId);
-		if (!resume) throw new Error('존재하지 않는 이력서입니다.');
+		if (!resume) {
+			throw new ApiError(
+				404,
+				`존재하지 않는 이력서입니다.`,
+			);
+		}
 
 		await this.resumesRepository.deleteResume(resumeId);
 

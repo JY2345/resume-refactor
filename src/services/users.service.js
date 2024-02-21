@@ -1,7 +1,6 @@
 import { ApiError } from '../middlewares/error-handling.middleware.js';
 import { hashPassword } from '../utils/bcrypt.js';
 
-
 export class UsersService {
 
 	constructor(usersRepository) {
@@ -48,17 +47,6 @@ export class UsersService {
 	 */
 	createUser = async (userName, email, password, authCode) => {
 
-        let missingFields = [];
-        if (!userName) missingFields.push("회원명은");
-        if (!email) missingFields.push("이메일은");
-        if (!password) missingFields.push("패스워드는");
-        if (!authCode) missingFields.push("권한구분은");
-        if (missingFields.length > 0) {
-            throw new ApiError(
-                400,
-                `${missingFields.join(", ")} 필수값입니다.`
-            );
-        }
 
         const existingUser = await this.usersRepository.findUserByEmail(email);
         if (existingUser) {
@@ -176,4 +164,21 @@ export class UsersService {
 			updatedAt: user.updatedAt,
 		};
 	};
+
+    /* 토큰 찾기 */
+    findRefreshToken = async (refreshToken) => {
+		const existingToken = await this.usersRepository.findRefreshToken(refreshToken);
+
+		if (!existingToken) {
+			throw new ApiError(
+				401,
+				`생성된 토큰 정보를 확인할 수 없습니다.`,
+			);
+		}
+    }
+
+    /* 토큰 데이터 삭제 */
+    deleteRefreshToken = async (refreshToken) => {
+        const deletedToken = await this.usersRepository.deleteRefreshToken(refreshToken); 
+    }
 }
