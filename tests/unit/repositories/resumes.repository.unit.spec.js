@@ -69,10 +69,42 @@ describe('Resumes Repository Unit Test', () => {
 	});
 
 	test('updateResume Method', async () => {
-		console.log('test');
-	});
+		const mockReturn = '업데이트 성공적으로 완료';
+		const resumeId = 1;
+		const updateResumeParams = {
+			title: '테스트 제목입니다.',
+			contents: '테스트용 컨텐츠입니다.',
+			statusCode: 'APPLY',
+		};
+		const {title, contents, statusCode} = updateResumeParams;
+	
+		mockPrisma.resumes.update.mockReturnValue(mockReturn);
+		const updateData = await resumesRepository.updateResume(resumeId, title, contents, statusCode);
 
-	test('deleteResume Method', async () => {
-		console.log('test');
-	});
+		expect(updateData).toBe(mockReturn);
+		expect(mockPrisma.resumes.update).toHaveBeenCalledTimes(1);
+		expect(mockPrisma.resumes.update).toHaveBeenCalledWith({
+			where: { resumeId: resumeId },
+			data: {
+				title: title,
+				contents: contents,
+				statusCode: statusCode,
+			},
+		});
+	  });
+	
+	  test('deleteResume Method', async () => {
+		const mockReturn = 'delete Return String';
+		const resumeId = 1;
+	
+		mockPrisma.resumes.delete.mockReturnValue(mockReturn);
+	
+		const deleteResult = await resumesRepository.deleteResume(resumeId);
+	
+		expect(deleteResult).toBe(mockReturn);
+		expect(mockPrisma.resumes.delete).toHaveBeenCalledTimes(1);
+		expect(mockPrisma.resumes.delete).toHaveBeenCalledWith({
+		  where: { resumeId: resumeId },
+		});
+	  });
 });
