@@ -69,10 +69,44 @@ describe('Users Repository Unit Test', () => {
 	});
 
 	test('updateUserInfo Method', async () => {
-		console.log('test');
+		const mockReturn = '업데이트 성공적으로 완료';
+		const userId = 1;
+		const updateUserParams = {
+			userName: '테스트 유저',
+			authCode: 'admin',
+		};
+		const { title, contents, statusCode } = updateUserParams;
+
+		mockPrisma.users.update.mockReturnValue(mockReturn);
+		const updateData = await usersRepository.updateUserInfo(
+			userId,
+			userName,
+			authCode,
+		);
+
+		expect(updateData).toBe(mockReturn);
+		expect(mockPrisma.users.update).toHaveBeenCalledTimes(1);
+		expect(mockPrisma.users.update).toHaveBeenCalledWith({
+			where: { userId: userId },
+			data: {
+				userName: userName,
+				authCode: authCode,
+			},
+		});
 	});
 
 	test('deleteUser Method', async () => {
-		console.log('test');
+		const mockReturn = 'delete Return String';
+		const userId = 1;
+
+		mockPrisma.users.delete.mockReturnValue(mockReturn);
+
+		const deleteResult = await usersRepository.deleteUser(userId);
+
+		expect(deleteResult).toBe(mockReturn);
+		expect(mockPrisma.users.delete).toHaveBeenCalledTimes(1);
+		expect(mockPrisma.users.delete).toHaveBeenCalledWith({
+			where: { userId: userId },
+		});
 	});
 });

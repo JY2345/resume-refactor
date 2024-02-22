@@ -8,7 +8,7 @@ let mockUsersRepository = {
 	createUser: jest.fn(),
 	updateUserInfo: jest.fn(),
 	deleteUser: jest.fn(),
-	findUserByEmail : jest.fn(),
+	findUserByEmail: jest.fn(),
 };
 
 let usersService = new UsersService(mockUsersRepository);
@@ -69,7 +69,7 @@ describe('Users Service Unit Test', () => {
 		const hashedPassword = await hashPassword(password);
 
 		mockUsersRepository.createUser.mockReturnValue({
-			...sampleUser
+			...sampleUser,
 		});
 
 		const result = await usersService.createUser(
@@ -78,7 +78,7 @@ describe('Users Service Unit Test', () => {
 			password,
 			authCode,
 		);
-		
+
 		expect(mockUsersRepository.createUser).toHaveBeenCalledTimes(1);
 		expect(mockUsersRepository.createUser).toHaveBeenCalledWith(
 			userName,
@@ -86,14 +86,12 @@ describe('Users Service Unit Test', () => {
 			hashedPassword,
 			authCode,
 		);
-		expect(result).toEqual(
-			{
-				userName,
-				email,
-				hashedPassword,
-				authCode,
-			}
-		);
+		expect(result).toEqual({
+			userName,
+			email,
+			hashedPassword,
+			authCode,
+		});
 	});
 
 	test('getUserById Method', async () => {
@@ -145,8 +143,8 @@ describe('Users Service Unit Test', () => {
 		expect(deleteUser).toEqual({
 			userId: 1,
 			createdAt: sampleUser.createdAt,
-			updatedAt: sampleUser.updatedAt
-		  });
+			updatedAt: sampleUser.updatedAt,
+		});
 	});
 
 	test('deleteUser Method By Not Found User Error', async () => {

@@ -82,5 +82,4 @@ describe('Resumes Controller Unit Test', () => {
 			data: '이력서 생성 완료',
 		});
 	});
-
 });
