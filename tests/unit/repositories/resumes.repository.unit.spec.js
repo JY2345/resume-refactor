@@ -76,10 +76,15 @@ describe('Resumes Repository Unit Test', () => {
 			contents: '테스트용 컨텐츠입니다.',
 			statusCode: 'APPLY',
 		};
-		const {title, contents, statusCode} = updateResumeParams;
-	
+		const { title, contents, statusCode } = updateResumeParams;
+
 		mockPrisma.resumes.update.mockReturnValue(mockReturn);
-		const updateData = await resumesRepository.updateResume(resumeId, title, contents, statusCode);
+		const updateData = await resumesRepository.updateResume(
+			resumeId,
+			title,
+			contents,
+			statusCode,
+		);
 
 		expect(updateData).toBe(mockReturn);
 		expect(mockPrisma.resumes.update).toHaveBeenCalledTimes(1);
@@ -91,20 +96,20 @@ describe('Resumes Repository Unit Test', () => {
 				statusCode: statusCode,
 			},
 		});
-	  });
-	
-	  test('deleteResume Method', async () => {
+	});
+
+	test('deleteResume Method', async () => {
 		const mockReturn = 'delete Return String';
 		const resumeId = 1;
-	
+
 		mockPrisma.resumes.delete.mockReturnValue(mockReturn);
-	
+
 		const deleteResult = await resumesRepository.deleteResume(resumeId);
-	
+
 		expect(deleteResult).toBe(mockReturn);
 		expect(mockPrisma.resumes.delete).toHaveBeenCalledTimes(1);
 		expect(mockPrisma.resumes.delete).toHaveBeenCalledWith({
-		  where: { resumeId: resumeId },
+			where: { resumeId: resumeId },
 		});
-	  });
+	});
 });

@@ -97,7 +97,7 @@ export class UsersController {
 		try {
 			const { userId } = req.params;
 			const { userName, authCode } = req.body;
-			
+
 			const updatedUser = await this.usersService.updateUserInfo(
 				userId,
 				userName,

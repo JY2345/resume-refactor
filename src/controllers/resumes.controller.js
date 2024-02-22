@@ -12,7 +12,7 @@ export class ResumesController {
 		try {
 			const resumes = await this.resumesService.findAllResumes();
 			return res.status(200).json({ data: resumes });
-		} catch (err){
+		} catch (err) {
 			next(err);
 		}
 	};

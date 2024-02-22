@@ -1,5 +1,6 @@
 import { beforeEach, jest } from '@jest/globals';
 import { UsersController } from '../../../src/controllers/users.controller';
+import {mockRequest, mockResponse} from 'jest-mock-express';
 
 const mockUsersService = {
 	findAllUsers: jest.fn(),
@@ -9,62 +10,87 @@ const mockUsersService = {
 	deleteUser: jest.fn(),
 };
 
-const mockRequest = {
-	body: jest.fn(),
-};
-
-const mockResponse = {
-	status: jest.fn(),
-	json: jest.fn(),
-};
-
 const mockNext = jest.fn();
 const usersController = new UsersController(mockUsersService);
 
 describe('Users Controller Unit Test', () => {
+	let req, res;
+
 	beforeEach(() => {
-		jest.resetAllMocks();
-		mockResponse.status.mockReturnValue(mockResponse);
+		jest.clearAllMocks();
+		req = mockRequest();
+		res = mockResponse();
 	});
 
-	test('getUsers Method by Success', async () => {
-		const sampleUsers = [
-			{
-				userId: 1,
-				userName: '관리자계정',
-				email: 'admin@mail.com',
-				authCode: 'admin',
-				createdAt: new Date('19 Feb 2024 08:38 UTC'),
-				updatedAt: new Date('19 Feb 2024 08:38 UTC'),
-			},
-			{
-				userId: 2,
-				userName: '유저계정',
-				email: 'user@mail.com',
-				authCode: 'user',
-				createdAt: new Date('19 Feb 2024 08:38 UTC'),
-				updatedAt: new Date('19 Feb 2024 08:38 UTC'),
-			},
-		];
-
-		//TODO
-	});
-
-	test('createUser Method by Success', async () => {
-		const createUserRequestBodyParams = {
-			userId: 1,
-			userName: '관리자계정',
-			email: 'admin@mail.com',
-			authCode: 'admin',
-
-			// TODO
+	test('userSignUp', async () => {
+		const userData = {
+			userName: 'Test User',
+			email: 'test@example.com',
+			password: 'password123',
 		};
+		req.body = userData;
+
+		await usersController.userSignUp(req, res, mockNext);
+
+		expect(mockUsersService.createUser).toHaveBeenCalledWith(
+			userData.userName,
+			userData.email,
+			userData.password,
+			expect.anything(),
+		);
+		expect(res.status).toHaveBeenCalledWith(201);
 	});
 
-	test('createUser Method by Invalid Params Error', async () => {
-		mockRequest.body = {
-			userId: 0,
-			title: 'invalid Params Error',
-		};
+	test('userSignIn', async () => {
+		await usersController.userSignIn(req, res, mockNext);
+
+		expect(mockUsersService.userSignIn).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(200);
+	});
+
+	test('userSignOut', async () => {
+		await usersController.userSignOut(req, res, mockNext);
+
+		expect(res.status).toHaveBeenCalledWith(200);
+	});
+
+	test('getUsers', async () => {
+		await usersController.getUsers(req, res, mockNext);
+
+		expect(mockUsersService.findAllUsers).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(200);
+	});
+
+	test('getUserById', async () => {
+		req.params.userId = '1';
+
+		await usersController.getUserById(req, res, mockNext);
+
+		expect(mockUsersService.findUserById).toHaveBeenCalledWith('1');
+		expect(res.status).toHaveBeenCalledWith(200);
+	});
+
+	test('updateUserInfo', async () => {
+		req.params.userId = '1';
+		req.body = { userName: 'Updated User' };
+
+		await usersController.updateUserInfo(req, res, mockNext);
+
+		expect(mockUsersService.updateUserInfo).toHaveBeenCalledWith(
+			'1',
+			req.body.userName,
+			expect.anything(),
+		);
+		expect(res.status).toHaveBeenCalledWith(200);
+	});
+
+	test('deleteUser', async () => {
+		req.params.userId = '1';
+
+		await usersController.deleteUser(req, res, mockNext);
+
+		expect(mockUsersService.deleteUser).toHaveBeenCalledWith('1');
+		expect(res.status).toHaveBeenCalledWith(200);
+		s;
 	});
 });
