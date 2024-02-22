@@ -1,6 +1,6 @@
 import { expect, jest } from '@jest/globals';
 import { UsersService } from '../../../src/services/users.service.js';
-import { all } from 'axios';
+import { hashPassword } from '../../../src/utils/bcrypt.js';
 
 let mockUsersRepository = {
 	findAllUsers: jest.fn(),
@@ -8,11 +8,12 @@ let mockUsersRepository = {
 	createUser: jest.fn(),
 	updateUserInfo: jest.fn(),
 	deleteUser: jest.fn(),
+	findUserByEmail : jest.fn(),
 };
 
 let usersService = new UsersService(mockUsersRepository);
 
-describe('s Repository Unit Test', () => {
+describe('Users Service Unit Test', () => {
 	// 테스트 실행시키기 전에 실행...
 	beforeEach(() => {
 		jest.resetAllMocks(); // Mock 초기화
@@ -56,46 +57,48 @@ describe('s Repository Unit Test', () => {
 
 	test('createUser Method', async () => {
 		const sampleUser = {
-			userId: 1,
-			title: '새 이력서 제목',
-			contents: '새 이력서 내용',
+			userName: 'JEST',
+			email: 'test@test.com',
+			password: '1234',
+			authCode: 'user',
 			createdAt: '2024-02-19T08:38:00Z',
-			userId: 1,
 			updatedAt: '2024-02-19T08:38:00Z',
 		};
 
-		const { userId, title, contents, statusCode } = sampleUser;
+		const { userName, email, password, authCode } = sampleUser;
+		const hashedPassword = await hashPassword(password);
 
 		mockUsersRepository.createUser.mockReturnValue({
-			...sampleUser,
-			createdAt: sampleUser.createdAt,
-			userId: sampleUser.userId,
-			updatedAt: sampleUser.updatedAt,
+			...sampleUser
 		});
 
 		const result = await usersService.createUser(
-			userId,
-			title,
-			contents,
-			statusCode,
+			userName,
+			email,
+			password,
+			authCode,
 		);
-
+		
 		expect(mockUsersRepository.createUser).toHaveBeenCalledTimes(1);
 		expect(mockUsersRepository.createUser).toHaveBeenCalledWith(
-			userId,
-			title,
-			contents,
-			statusCode,
+			userName,
+			email,
+			hashedPassword,
+			authCode,
 		);
-		expect(result).toEqual(sampleUser);
+		expect(result).toEqual(
+			{
+				userName,
+				email,
+				hashedPassword,
+				authCode,
+			}
+		);
 	});
 
 	test('getUserById Method', async () => {
 		const sampleUser = {
 			userId: 1,
-			userId: 1,
-			title: '조회 테스트용 타이틀',
-			contents: '조회 테스트용 본문',
 			createdAt: new Date('19 Feb 2024 08:38 UTC'),
 			updatedAt: new Date('19 Feb 2024 08:38 UTC'),
 		};
@@ -140,8 +143,10 @@ describe('s Repository Unit Test', () => {
 		);
 
 		expect(deleteUser).toEqual({
-			message: '정상 삭제되었습니다.',
-		});
+			userId: 1,
+			createdAt: sampleUser.createdAt,
+			updatedAt: sampleUser.updatedAt
+		  });
 	});
 
 	test('deleteUser Method By Not Found User Error', async () => {
@@ -191,6 +196,13 @@ describe('s Repository Unit Test', () => {
 			updateData.userName,
 			updateData.email,
 		);
-		expect(result).toEqual({ message: '정상 수정되었습니다.' });
+		expect(result).toEqual({
+			userId: 1,
+			userName: '관리자계정',
+			email: 'admin@mail.com',
+			authCode: 'admin',
+			createdAt: new Date('2024-02-19T08:38:00.000Z'),
+			updatedAt: new Date('2024-02-19T08:38:00.000Z'),
+		});
 	});
 });
